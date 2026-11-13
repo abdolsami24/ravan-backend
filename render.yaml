@@ -1,0 +1,43 @@
+# Render Blueprint for the RAVAN backend (NestJS + MySQL)
+# This file lets Render create the web service automatically from this repo.
+# It contains NO secrets: DB_PASS and JWT_SECRET are declared with sync: false,
+# so Render will ask for their values in the dashboard — never put real
+# passwords in this file or in git.
+services:
+  - type: web
+    name: ravan-backend
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm run start:prod
+    healthCheckPath: /api/docs
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # Render always sets PORT itself (default 10000). Declared here so the
+      # value is explicit; the app reads it from the PORT env var.
+      - key: PORT
+        value: "10000"
+      # No SMS provider yet: dev mode returns the OTP in the API response.
+      # Keep "true" for this TEST deployment; set "false" in production
+      # and wire a real SMS provider instead.
+      - key: OTP_DEV_MODE
+        value: "true"
+      - key: OTP_TTL_SECONDS
+        value: "300"
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      # Secrets and database connection — fill these in the Render dashboard
+      # (Environment tab). They are NOT in this file on purpose.
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        sync: false
+      - key: DB_NAME
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASS
+        sync: false
+      - key: JWT_SECRET
+        sync: false
